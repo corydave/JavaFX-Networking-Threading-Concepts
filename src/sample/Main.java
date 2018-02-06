@@ -26,13 +26,13 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-    @Override
     /**
      * This method is the implemented method from the parent class; this is the entry point into the UI.
      *
      * @see javafx.application.Application
      */
-    public void start(Stage primaryStage) throws Exception{
+    @Override
+    public void start(Stage primaryStage) throws Exception {
         // The primaryStage is passed into this method by the JavaFX runtime. The stage is where we can place UI
         // components
         //
