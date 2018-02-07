@@ -11,6 +11,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+
 /**
  * This is JavaFX application which is used to illustrate some basic concepts of JavaFX including invocation, layouts,
  * useful components and action handlers (button clicks).
@@ -106,9 +112,34 @@ public class Main extends Application {
              */
             @Override
             public void handle(ActionEvent event) {
-                // For now, simply set the text of the "response" text field to be the uppercase version of the
-                // "message" text field
-                responseTextField.setText(messageTextField.getText().toUpperCase());
+                try {
+                    // The host to connect to
+                    String host = "localhost";
+                    // The port to connect to
+                    int port = 1234;
+
+                    // Create a socket
+                    Socket socket = new Socket(host, port);
+                    // Prepare the reader and writer
+                    BufferedWriter socketWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                    // Write the message
+                    socketWriter.write(messageTextField.getText() + "\n");
+                    socketWriter.flush();
+
+                    // Read the response
+                    String response = socketReader.readLine();
+                    responseTextField.setText(response);
+
+                    // Cleanup the connection
+                    socketWriter.close();
+                    socketReader.close();
+                    socket.close();
+                } catch (Exception exception) {
+                    responseTextField.setText("ERROR: " + exception.getMessage());
+                    exception.printStackTrace(System.err);
+                }
             }
         });
 
